@@ -12,7 +12,7 @@ export const Container = styled.div`
 export const LeftSide = styled.div`
     width: 50%;
     height: 70px;
-    display: flex:
+    display: flex;
     align-items: center;
     padding-left: 10px;
 
@@ -42,7 +42,7 @@ export const RightSide = styled.div`
 
     #notification{
         img{
-            widht: 40px;
+            width: 40px;
             height: 40px;
         }
 
