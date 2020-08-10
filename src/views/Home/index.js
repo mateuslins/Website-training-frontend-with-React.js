@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as S from './styles'
+
+import api from '../../services/api';
 
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
@@ -9,6 +11,19 @@ import TaskCard from '../../components/TaskCard';
 function Home() {
 
   const [filterActived, setFilterActived] = useState("all");
+  const [tasks, setTasks] = useState([]); //começa vazio com os []
+
+  async function loadTasks() {
+    await api.get(`/task/filter/${filterActived}/11:11:11:11:11:11`) //o filtedActived vai fazer a função de passar qual especificação de data é pra buscar nas rotas do backend
+      .then(response => {
+        setTasks(response.data)
+      })
+  }
+
+  //função para que toda vez que a tela recarregar ou o filterActived mudar, ele chamar loadTasks para atualizar as informações
+  useEffect(() => {
+    loadTasks();
+  }, [filterActived]);
 
   return (
     <S.Container>
@@ -37,16 +52,11 @@ function Home() {
       </S.Title>
 
       <S.Content>
-        <TaskCard />
-        <TaskCard />
-        <TaskCard />
-        <TaskCard />
-        <TaskCard />
-        <TaskCard />
-        <TaskCard />
-        <TaskCard />
-        <TaskCard />
-        <TaskCard />
+        {
+          tasks.map(t => (
+            <TaskCard type={t.type} title={t.title} when={t.when} />
+          ))
+        }
       </S.Content>
 
       <Footer />
