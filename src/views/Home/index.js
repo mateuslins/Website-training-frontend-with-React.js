@@ -12,6 +12,7 @@ function Home() {
 
   const [filterActived, setFilterActived] = useState("all");
   const [tasks, setTasks] = useState([]); //começa vazio com os []
+  const [lateCount, setLateCount] = useState();
 
   async function loadTasks() {
     await api.get(`/task/filter/${filterActived}/11:11:11:11:11:11`) //o filtedActived vai fazer a função de passar qual especificação de data é pra buscar nas rotas do backend
@@ -20,14 +21,26 @@ function Home() {
       })
   }
 
+  async function lateVerify() {
+    await api.get(`/task/filter/late/11:11:11:11:11:11`)
+      .then(response => {
+        setLateCount(response.data.length)
+      })
+  }
+
+  function notification() {
+    setFilterActived('late');
+  }
+
   //função para que toda vez que a tela recarregar ou o filterActived mudar, ele chamar loadTasks para atualizar as informações
   useEffect(() => {
     loadTasks();
+    lateVerify();
   }, [filterActived]);
 
   return (
     <S.Container>
-      <Header />
+      <Header lateCount={lateCount} clickNotification={notification} />
 
       <S.FilterArea>
         <button type="button" onClick={() => setFilterActived("all")}>
@@ -48,7 +61,7 @@ function Home() {
       </S.FilterArea>
 
       <S.Title>
-        <h3>TAREFAS</h3>
+        <h3>{filterActived == 'late' ? 'TAREFAS ATRASADAS' : 'TAREFAS'}</h3>
       </S.Title>
 
       <S.Content>
